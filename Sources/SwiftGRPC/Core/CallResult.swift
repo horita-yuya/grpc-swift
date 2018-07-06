@@ -71,6 +71,6 @@ public struct CallResult: CustomStringConvertible {
     return result
   }
   
-  static let fakeOK = CallResult(success: true, statusCode: .ok, statusMessage: "OK", resultData: nil,
-                                 initialMetadata: nil, trailingMetadata: nil)
+  static let fakeOK = CallResult(success: true, statusCode: .ok, statusMessage: "OK", resultData: nil, initialMetadata: nil, trailingMetadata: nil)
+  static let fakeUnavailable = CallResult(success: false, statusCode: .unavailable, statusMessage: nil, resultData: nil, initialMetadata: nil, trailingMetadata: nil)
 }
