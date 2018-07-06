@@ -116,7 +116,7 @@ public class Call {
                     message: Data? = nil,
                     completion: ((CallResult) -> Void)? = nil) throws {
     
-    reachability.whenReachable = { _ in
+    reachability.whenUnreachable = { _ in
         completion?(CallResult.fakeUnavailable)
     }
     
