@@ -59,6 +59,9 @@ public class Call {
 
   /// Mutex for synchronizing message sending
   private let sendMutex: Mutex
+    
+  // Use for checking network condition
+  private let reachability: Reachability
 
   /// Initializes a Call representation
   ///
@@ -70,12 +73,14 @@ public class Call {
     self.completionQueue = completionQueue
     writing = false
     sendMutex = Mutex()
+    reachability = Reachability()!
   }
 
   deinit {
     if owned {
       cgrpc_call_destroy(underlyingCall)
     }
+    reachability.stopNotifier()
   }
 
   /// Initiates performance of a group of operations without waiting for completion.
@@ -110,6 +115,13 @@ public class Call {
                     metadata: Metadata,
                     message: Data? = nil,
                     completion: ((CallResult) -> Void)? = nil) throws {
+    
+    reachability.whenReachable = { _ in
+        completion?(CallResult.fakeUnavailable)
+    }
+    
+    try reachability.startNotifier()
+    
     var operations: [Operation] = []
     switch style {
     case .unary:
